@@ -3,7 +3,7 @@ import config
 import os
 import time
 
-class Reader:
+class Metadata:
     def __init__(self):
         self.data_dir_path = f'{config.PATH}/podcasts'
 
@@ -12,7 +12,7 @@ class Reader:
 
         stats = os.stat(file)
 
-        size_kbs = stats.st_size * 0.000125
+        size_kbs = int(stats.st_size) * 0.000125
         creation_datetime = time.ctime(stats.st_ctime)
         last_change_datetime = time.ctime(stats.st_mtime)
         last_accessed_datetime = time.ctime(stats.st_atime)
@@ -35,9 +35,5 @@ class Reader:
             if file.is_file():
                 metadata = self.get_file_metadata(file, index)
                 index += 1
-                metadatas.append(metadata)
-        return metadatas
-
-
-Reader = Reader()
-Reader.get_all_files_metadata()
+                metadata_list.append(metadata)
+        return metadata_list

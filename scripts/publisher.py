@@ -1,15 +1,13 @@
 from kafka import KafkaProducer
-from reader import Reader
+import reader
 import json
 
-def publish_metadata(topic):
+r = reader.Metadata()
+def publish_metadata(topic='podcasts_metadata'):
+    metadata_list = r.get_all_files_metadata()
     producer = KafkaProducer(bootstrap_servers='localhost:9092',
-                             value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-    reader = Reader()
-    metadata_list = reader.get_all_files_metadata()
+                             value_serializer=lambda m: json.dumps(m).encode('utf-8'))
     for m in metadata_list:
         producer.send(topic, m)
     producer.flush()
-    print("s")
-
-publish_metadata('datas')
+    print(f"Published to kafka to topic {topic}")
