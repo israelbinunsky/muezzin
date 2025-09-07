@@ -30,12 +30,14 @@ class Reader:
 
     def get_all_files_metadata(self):
         index = 1
+        metadata_list = list()
         for file in Path(self.data_dir_path).glob("*.wav"):
             if file.is_file():
                 metadata = self.get_file_metadata(file, index)
                 index += 1
-                print(metadata)
+                metadatas.append(metadata)
+        return metadatas
 
 
-reader = Reader()
-reader.get_all_files_metadata()
+Reader = Reader()
+Reader.get_all_files_metadata()
