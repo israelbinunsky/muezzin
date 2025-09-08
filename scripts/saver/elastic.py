@@ -7,12 +7,18 @@ logger = Logger.get_logger()
 
 class Elastic:
     def __init__(self):
-        self.es = Elasticsearch(config.ELASTIC_SERVER)
+        try:
+            self.es = Elasticsearch(config.ELASTIC_SERVER)
+        except Exception as e:
+            logger.error(e)
 
     def create_index(self, metadata):
         index = str(metadata['size_bites']) + str(int(metadata['creation_time']))
-        self.es.indices.create(index=index, ignore=400)
-        return index
+        try:
+            self.es.indices.create(index=index, ignore=400)
+            return index
+        except Exception as e:
+            logger.error(e)
 
     def send(self, metadata):
         try:

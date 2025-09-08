@@ -7,10 +7,13 @@ logger = Logger.get_logger()
 
 class Mongo:
     def __init__(self):
-        self.client = MongoClient(config.MONGO_URI)
-        self.db = self.client[config.MONGO_DB]
-        self.fs = gridfs.GridFS(self.db)
-        self.collection = config.MONGO_COLLECTION
+        try:
+            self.client = MongoClient(config.MONGO_URI)
+            self.db = self.client[config.MONGO_DB]
+            self.fs = gridfs.GridFS(self.db)
+            self.collection = config.MONGO_COLLECTION
+        except Exception as e:
+            logger.error(e)
 
     def send(self, metadata, index):
         filename_in_db = f'{index}.wav'
