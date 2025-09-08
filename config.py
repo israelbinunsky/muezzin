@@ -1,6 +1,8 @@
 import os
-PATH = 'C:/Users/israel/Desktop/data'
-TOPIC = 'podcasts_metadata'
-MONGO_DB = os.getenv("MONGO_DB", )
+PATH = os.getenv('PATH','C:/Users/israel/Desktop/data')
+TOPIC = os.getenv('TOPIC', 'podcasts_metadata')
+MONGO_DB = os.getenv("MONGO_DB", 'muezzin')
 MONGO_URI = os.getenv('MONGO_URI', "mongodb://localhost:27017/")
 MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", 'podcasts')
+KAFKA_SERVER = os.getenv('KAFKA_SERVER','localhost:9092')
+ELASTIC_SERVER = os.getenv('ELASTIC_SERVER', "http://localhost:9200")
