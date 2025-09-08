@@ -37,5 +37,3 @@ class Metadata:
                 metadata = self.get_file_metadata(file)
                 metadata_list.append(metadata)
         return metadata_list
-m = Metadata()
-# print(m.get_all_files_metadata())
