@@ -20,7 +20,6 @@ class Mongo:
         try:
             with open(metadata['path'], 'rb') as f:
                 file_id = self.fs.put(f, index=index, filename=filename_in_db, content_type='audio/wav')
-                print(f"file uploaded to mongo with id: {file_id}")
                 logger.info(f"file uploaded to mongo with id: {file_id}")
         except Exception as e:
             print(e)

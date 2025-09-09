@@ -4,11 +4,11 @@ from kafka import KafkaConsumer
 import json
 import config
 from scripts.logs import Logger
+from stt import Stt
 
 logger = Logger.get_logger()
 
-elastic = Elastic()
-mongo = Mongo()
+
 def consumer_saver_manager(topic=config.TOPIC):
     try:
         con = KafkaConsumer(
@@ -16,11 +16,17 @@ def consumer_saver_manager(topic=config.TOPIC):
             bootstrap_servers=[config.KAFKA_SERVER],
             value_deserializer=lambda m: json.loads(m.decode('utf-8'))
         )
+
+        elastic = Elastic()
+        mongo = Mongo()
+        stt = Stt()
+
         for message in con:
             print(message.value)
             logger.info(f'{message.value['filename']} pulled from topic {topic}')
-            idx = elastic.send(message.value)
-            mongo.send(message.value, idx)
+            elastic.send(message.value)
+            mongo.send(message.value, elastic.doc_id)
+            stt.stt(message.value['filepath'])
         con.close()
     except Exception as e:
         logger.error(e)

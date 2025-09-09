@@ -4,6 +4,7 @@ from datetime import datetime
 import config
 
 
+
 class Logger:
     _logger = None
     @classmethod
