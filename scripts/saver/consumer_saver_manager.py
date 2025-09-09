@@ -22,11 +22,13 @@ def consumer_saver_manager(topic=config.TOPIC):
         stt = Stt()
 
         for message in con:
-            print(message.value)
-            logger.info(f'{message.value['filename']} pulled from topic {topic}')
-            elastic.send(message.value)
-            mongo.send(message.value, elastic.doc_id)
-            stt.stt(message.value['filepath'])
+            data = message.value
+            print(data)
+            logger.info(f'{data['filename']} pulled from topic {topic}')
+            transcription = stt.stt(data['filepath'])
+            data['transcription'] = transcription
+            elastic.send(data)
+            mongo.send(data, elastic.doc_id)
         con.close()
     except Exception as e:
         logger.error(e)
