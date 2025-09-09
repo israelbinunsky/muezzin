@@ -4,12 +4,11 @@ import os
 import time
 
 class Metadata:
-    def __init__(self):
-        self.data_dir_path = f'{config.PATH}/podcasts'
+    def __init__(self,data_dir_path = config.DATA_PATH):
+        self.data_dir_path = data_dir_path
 
     def get_file_metadata(self, file):
         name = file.name
-
         stats = os.stat(file)
         size_kbs = stats.st_size * 0.000125
         size_bites = stats.st_size
@@ -19,7 +18,7 @@ class Metadata:
         last_accessed_datetime = time.ctime(stats.st_atime)
 
         metadata = {
-            'path': str(file),
+            'filepath': str(file),
             'filename': name,
             'size_kbs': size_kbs,
             'size_bites': size_bites,
