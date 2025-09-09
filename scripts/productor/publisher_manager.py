@@ -18,7 +18,7 @@ def publish_metadata(topic=config.TOPIC):
         logger.info(f"Published to topic {topic}")
         producer.close()
     except Exception as e:
-        logger.error(e)
+        logger.error(f"error {e}")
 
 publish_metadata()
 

@@ -2,6 +2,8 @@ import speech_recognition as sr
 import config
 import pymongo
 from scripts.logs import Logger
+import base64
+from mongo import Mongo
 
 logger = Logger.get_logger()
 
@@ -9,18 +11,12 @@ class Stt:
     def __init__(self):
         self.r = sr.Recognizer()
 
-    def pull_binary_data(self):
-        client = pymongo.MongoClient(config.MONGO_URI)
-        db = client[config.MONGO_DB]
-        collection = db[config.MONGO_COLLECTION]
+    def binary_to_text(self, base64_data):
+        decoded_bytes = base64.b64decode(base64_data)
+        decoded_string = decoded_bytes.decode('utf-8', errors='ignore')
+        print(decoded_string)
 
-
-        for document in collection.find({}, {"name": 1, "_id": 0}):
-            print(document.get("name"))
-
-        client.close()
-    def stt(self, filepath):
-
+    def path_to_text(self, filepath):
         with sr.AudioFile(filepath) as source:
             audio_data = self.r.record(source)
             try:
@@ -31,5 +27,5 @@ class Stt:
             except sr.UnknownValueError as e:
                 logger.error(e)
             except sr.RequestError as e:
-                logger.error(e)\
+                logger.error(e)
 

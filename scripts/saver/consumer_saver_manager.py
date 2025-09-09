@@ -16,7 +16,6 @@ def consumer_saver_manager(topic=config.TOPIC):
             bootstrap_servers=[config.KAFKA_SERVER],
             value_deserializer=lambda m: json.loads(m.decode('utf-8'))
         )
-
         elastic = Elastic()
         mongo = Mongo()
         stt = Stt()
@@ -25,13 +24,13 @@ def consumer_saver_manager(topic=config.TOPIC):
             data = message.value
             print(data)
             logger.info(f'{data['filename']} pulled from topic {topic}')
-            transcription = stt.stt(data['filepath'])
+            transcription = stt.path_to_text(data['filepath'])
             data['transcription'] = transcription
             elastic.send(data)
             mongo.send(data, elastic.doc_id)
         con.close()
     except Exception as e:
-        logger.error(e)
+        logger.error(f"error {e}")
 
 consumer_saver_manager()
 
