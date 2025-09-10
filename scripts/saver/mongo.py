@@ -2,7 +2,6 @@ from pymongo import MongoClient
 import gridfs
 import config
 from scripts.logs import Logger
-import base64
 
 logger = Logger.get_logger()
 
@@ -17,7 +16,7 @@ class Mongo:
             logger.error(f"error {e}")
 
     def send(self, metadata, index):
-        filename_in_db = f'{index}.wav'
+        filename_in_db = f'{metadata['filename'].replace(" ", "")}.wav'
         try:
             with open(metadata['filepath'], 'rb') as f:
                 file_id = self.fs.put(f, index=index, filename=filename_in_db, content_type='audio/wav')
@@ -25,8 +24,8 @@ class Mongo:
         except Exception as e:
             logger.error(f"error {e}")
 
-    def mongo_pull_binary_data(self):
+    def mongo_pull_field(self, field = "data"):
         binary_datas = list()
-        for document in self.db.fs.chunks.find({}, {"data": 1, "_id": 0}):
-            binary_datas.append(document.get("data"))
+        for document in self.db.fs.chunks.find({}, {field: 1, "_id": 0}):
+            binary_datas.append(document.get(field))
         return binary_datas
