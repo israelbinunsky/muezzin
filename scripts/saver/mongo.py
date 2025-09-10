@@ -25,8 +25,8 @@ class Mongo:
         except Exception as e:
             logger.error(f"error {e}")
 
-    def mongo_pull_binary_data(self):
+    def mongo_pull_field(self, field = "data"):
         binary_datas = list()
-        for document in self.db.fs.chunks.find({}, {"data": 1, "_id": 0}):
-            binary_datas.append(document.get("data"))
+        for document in self.db.fs.chunks.find({}, {field: 1, "_id": 0}):
+            binary_datas.append(document.get(field))
         return binary_datas

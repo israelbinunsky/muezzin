@@ -14,7 +14,7 @@ class Stt:
     def binary_to_text(self, base64_data):
         decoded_bytes = base64.b64decode(base64_data)
         decoded_string = decoded_bytes.decode('utf-8', errors='ignore')
-        print(decoded_string)
+        return decoded_string
 
     def path_to_text(self, filepath):
         with sr.AudioFile(filepath) as source:

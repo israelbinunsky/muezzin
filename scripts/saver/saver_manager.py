@@ -4,7 +4,7 @@ from kafka import KafkaConsumer
 import json
 import config
 from scripts.logs import Logger
-from stt import Stt
+from scripts.adder.stt import Stt
 
 logger = Logger.get_logger()
 
