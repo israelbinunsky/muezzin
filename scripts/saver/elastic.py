@@ -1,3 +1,5 @@
+from ast import Index
+
 from elasticsearch import Elasticsearch
 import config
 from scripts.logs import Logger
@@ -32,10 +34,12 @@ class Elastic:
     def create_doc_id(self, metadata):
         self.doc_id = str(metadata['size_bites']) + str(int(metadata['creation_time']))
 
-    def send(self, metadata):
+    def send(self, metadata, index = None):
+        if index == None:
+            index = self.index
         self.create_doc_id(metadata)
         try:
-            self.es.indices.create(index=self.index, mappings=self.mappings, ignore=400)
+            self.es.indices.create(index=index, mappings=self.mappings, ignore=400)
             res = self.es.index(index=self.index, document=metadata, id=self.doc_id)
             logger.info(f'elastic {self.doc_id} {res["result"]}')
         except Exception as e:
@@ -75,7 +79,6 @@ class Elastic:
                 id=document_id,
                 body={"doc": {filed: value}}
             )
-
             logger.info(f'field {filed} updated in doc id: {document_id}')
         except Exception as e:
             logger.error(f"error {e}")

@@ -7,7 +7,6 @@ from scripts.logs import Logger
 
 logger = Logger.get_logger()
 
-
 def consumer_saver_manager(topic=config.TOPIC):
     try:
         con = KafkaConsumer(

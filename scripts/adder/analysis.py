@@ -39,7 +39,7 @@ class Analysis:
                             is_hostile = True
             for double in self.doubles_lass_hostile_list:
                 if words[i] == double[0]:
-                    if words[i] != len(words):
+                    if i != len(words) and i != len(words)-1:
                         if words[i + 1] == double[1]:
                             hostile += 1
 
@@ -54,15 +54,12 @@ class Analysis:
         res = self.hostile_calculation(text)
         hostility_percent = res['hostility_percent']
         is_hostile = res['is_hostile']
-
-        self.elastic.add_mapping_field("bds_percent", "long")
         self.elastic.update_new_field(document_id, "bds_percent", hostility_percent)
 
         if hostility_percent >= 4 / (average_minute_words * 2):
             is_bds = True
         else:
             is_bds = False
-        self.elastic.add_mapping_field("is_bds", "boolean")
         self.elastic.update_new_field(document_id, "is_bds", is_bds)
 
         if not is_bds:
@@ -71,6 +68,5 @@ class Analysis:
             bds_threat_level = 'high'
         else:
             bds_threat_level = 'medium'
-        self.elastic.add_mapping_field("bds_threat_level", "text")
         self.elastic.update_new_field(document_id, "bds_threat_level", bds_threat_level)
 

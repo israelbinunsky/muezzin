@@ -2,7 +2,6 @@ import speech_recognition as sr
 from scripts.logs import Logger
 import base64
 
-
 logger = Logger.get_logger()
 
 class Stt:
