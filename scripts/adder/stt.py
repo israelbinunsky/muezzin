@@ -1,9 +1,7 @@
 import speech_recognition as sr
-import config
-import pymongo
 from scripts.logs import Logger
 import base64
-from mongo import Mongo
+
 
 logger = Logger.get_logger()
 
@@ -22,7 +20,6 @@ class Stt:
             try:
                 text = self.r.recognize_google(audio_data)
                 logger.info("converted to text")
-                print("Transcribed Text: " + text)
                 return text
             except sr.UnknownValueError as e:
                 logger.error(e)

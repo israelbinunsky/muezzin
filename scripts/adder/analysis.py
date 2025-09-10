@@ -1,6 +1,6 @@
 import config
 from stt import Stt
-from elastic import Elastic
+from scripts.saver.elastic import Elastic
 
 class Analysis:
     def __init__(self):
@@ -22,10 +22,12 @@ class Analysis:
 
     def hostile_calculation(self, text):
         hostile = 0
+        is_hostile = False
         words = text.split(' ')
         for i in range(len(words)):
             if words[i] in self.singles_hostile_list:
                 hostile += 2
+                is_hostile = True
             elif words[i] in self.singles_lass_hostile_list:
                 hostile += 1
 
@@ -34,6 +36,7 @@ class Analysis:
                     if words[i] != len(words):
                         if words[i+1] == double[1]:
                             hostile += 2
+                            is_hostile = True
             for double in self.doubles_lass_hostile_list:
                 if words[i] == double[0]:
                     if words[i] != len(words):
@@ -41,17 +44,21 @@ class Analysis:
                             hostile += 1
 
         hostility_percent = hostile / len(words)
-        return hostility_percent
+        res = {'is_hostile': is_hostile, 'hostility_percent': hostility_percent}
+        return res
 
 
     def update_stats(self,document_id, text):
         average_minute_words = 100
 
-        hostility_percent = self.hostile_calculation(text)
+        res = self.hostile_calculation(text)
+        hostility_percent = res['hostility_percent']
+        is_hostile = res['is_hostile']
+
         self.elastic.add_mapping_field("bds_percent", "long")
         self.elastic.update_new_field(document_id, "bds_percent", hostility_percent)
 
-        if hostility_percent >= 1 / (average_minute_words * 5):
+        if hostility_percent >= 4 / (average_minute_words * 2):
             is_bds = True
         else:
             is_bds = False
@@ -60,7 +67,7 @@ class Analysis:
 
         if not is_bds:
             bds_threat_level = 'none'
-        elif hostility_percent >= 4 / average_minute_words:
+        elif is_hostile == True or hostility_percent >= 4 / average_minute_words:
             bds_threat_level = 'high'
         else:
             bds_threat_level = 'medium'

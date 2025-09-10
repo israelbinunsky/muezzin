@@ -4,7 +4,6 @@ from kafka import KafkaConsumer
 import json
 import config
 from scripts.logs import Logger
-from scripts.adder.stt import Stt
 
 logger = Logger.get_logger()
 
@@ -18,14 +17,11 @@ def consumer_saver_manager(topic=config.TOPIC):
         )
         elastic = Elastic()
         mongo = Mongo()
-        stt = Stt()
 
         for message in con:
             data = message.value
             print(data)
             logger.info(f'{data['filename']} pulled from topic {topic}')
-            transcription = stt.path_to_text(data['filepath'])
-            data['transcription'] = transcription
             elastic.send(data)
             mongo.send(data, elastic.doc_id)
         con.close()
